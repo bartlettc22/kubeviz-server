@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{template "fullname" .}}
+  labels:
+    heritage: {{.Release.Service}}
+    release: {{.Release.Name}}
+    chart: {{.Chart.Name}}-{{.Chart.Version | replace "+" "_"}}
+    component: {{.Values.Server.ComponentName}}
+    app: {{template "name" .}}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: {{.Values.Server.HttpPort}}
+      name: http
+      protocol: TCP
+  selector:
+    component: {{.Values.Server.ComponentName}}
+    app: {{template "name" .}}

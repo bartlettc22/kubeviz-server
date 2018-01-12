@@ -1,0 +1,9 @@
+Server:
+  ComponentName: kube-visualization-server
+  Replicas: 1
+  Image: bartlettc/kube-visualization-server
+  ImageTag: latest
+  ImagePullPolicy: Always
+  ApiHostname: "" # Example https://my-collector:8090
+  ApiKey: ""
+  HttpPort: 80

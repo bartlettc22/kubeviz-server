@@ -1,0 +1,31 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: {{ .Values.Server.ComponentName }}
+    app: {{template "name" .}}
+spec:
+  replicas: {{ .Values.Server.Replicas }}
+  template:
+    metadata:
+      name: {{ template "fullname" . }}
+      labels:
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        component: {{.Values.Server.ComponentName}}
+        app: {{template "name" .}}
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{.Values.Server.Image}}:{{.Values.Server.ImageTag}}"
+        imagePullPolicy: "{{.Values.Server.ImagePullPolicy}}"
+        env:
+        - name: X_KUBEVIZ_TOKEN
+          value: {{ .Values.Server.ApiKey }}
+        - name: "API_ENDPOINT"
+          value: "{{ .Values.Server.ApiHostname }}"
