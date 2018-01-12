@@ -3,13 +3,13 @@ const app = express()
 var Memcached = require('memcached');
 var extend = require('node.extend');
 var bodyParser     =        require("body-parser");
-var memcached = new Memcached('memc:11211');
+var memcached = new Memcached('localhost:11211');
 var clusters = []
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get('/v1/data', function (req, res) {
+app.get('/data', function (req, res) {
   if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {
     res.status(200);
     sendData(res);
@@ -18,7 +18,7 @@ app.get('/v1/data', function (req, res) {
   }
 })
 
-app.post('/v1/data', function (req, res) {
+app.post('/data', function (req, res) {
   if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {
     try {
         setData(req.query.cluster, req.body)

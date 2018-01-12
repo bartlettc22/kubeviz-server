@@ -29,3 +29,9 @@ spec:
           value: {{ .Values.Server.ApiKey }}
         - name: "API_ENDPOINT"
           value: "{{ .Values.Server.ApiHostname }}"
+      - name: {{ template "fullname" . }}-memcached
+        image: memcached:latest
+        imagePullPolicy: Always
+        # ports:
+        # - name: memcached
+        #   containerPort: 11211
