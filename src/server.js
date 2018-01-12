@@ -6,8 +6,9 @@ var bodyParser     =        require("body-parser");
 var memcached = new Memcached('localhost:11211');
 var clusters = []
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: false }));
 
 app.get('/data', function (req, res) {
   if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {
