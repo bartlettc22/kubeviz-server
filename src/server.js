@@ -10,6 +10,12 @@ var clusters = []
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: false }));
 
+app.all('/', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+ });
+
 app.get('/data', function (req, res) {
   if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {
     res.status(200);
