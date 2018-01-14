@@ -32,6 +32,7 @@ spec:
       - name: {{ template "fullname" . }}-memcached
         image: memcached:latest
         imagePullPolicy: Always
+        args: ["memcached", "-I", "{{ .Values.Server.MemcachedMaxValueSize }}"]
         # ports:
         # - name: memcached
         #   containerPort: 11211

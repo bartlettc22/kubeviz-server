@@ -7,3 +7,4 @@ Server:
   ApiHostname: "" # Example https://my-collector:8090
   ApiKey: ""
   HttpPort: 80
+  MemcachedMaxValueSize: 5m

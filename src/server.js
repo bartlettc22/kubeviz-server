@@ -3,7 +3,7 @@ const app = express()
 var Memcached = require('memcached');
 var extend = require('node.extend');
 var bodyParser     =        require("body-parser");
-var memcached = new Memcached('localhost:11211');
+var memcached = new Memcached('localhost:11211', {"maxValue": 5242880});
 var clusters = []
 
 app.use(bodyParser.json({limit: 1024102420, type:'application/json'}));
