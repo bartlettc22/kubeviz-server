@@ -7,12 +7,12 @@ var memcached = new Memcached('localhost:11211');
 var clusters = []
 
 
-app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.json({limit: 50000000, type:'application/json'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: false }));
 
 app.all('/', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Content-type,Accept,X-Requested-With");
+  res.header("Access-Control-Allow-Headers", "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range");
   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
   next();
  });
@@ -40,6 +40,10 @@ app.post('/data', function (req, res, next) {
     res.sendStatus(401);
   }
 })
+
+app.options("/*", function(req, res, next){
+  res.send(200);
+});
 
 app.listen(80, () => console.log('App listening on port 80!'))
 
