@@ -13,7 +13,7 @@ app.use(bodyParser.json({limit: 1024102420, type:'application/json'}));
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range");
+  res.header("Access-Control-Allow-Headers", "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range,X-KubeViz-Token");
   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
   next();
  });

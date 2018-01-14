@@ -5,6 +5,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/proxy-body-size: 50000000
   labels:
     heritage: {{.Release.Service}}
     release: {{.Release.Name}}
