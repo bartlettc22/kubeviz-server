@@ -16,7 +16,7 @@ app.all('/', function(req, res, next) {
   next();
  });
 
-app.get('/data', function (req, res) {
+app.get('/data', function (req, res, next) {
   if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {
     res.status(200);
     sendData(res);
@@ -25,7 +25,7 @@ app.get('/data', function (req, res) {
   }
 })
 
-app.post('/data', function (req, res) {
+app.post('/data', function (req, res, next) {
   if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {
     try {
         setData(req.query.cluster, req.body)
