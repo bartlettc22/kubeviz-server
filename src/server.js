@@ -6,8 +6,9 @@ var bodyParser     =        require("body-parser");
 var memcached = new Memcached('localhost:11211');
 var clusters = []
 
-
-app.use(bodyParser.json({limit: 50000000, type:'application/json'}).urlencoded({limit: '50mb', extended: false }));
+app.use(bodyParser.json({limit: 1024102420, type:'application/json'}));
+// bodyParser.urlencoded({limit: 50000000, extended: false })
+// app.use(bodyParser);
 // app.use(bodyParser);
 
 app.use(function(req, res, next) {
