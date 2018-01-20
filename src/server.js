@@ -78,6 +78,7 @@ function setData(cluster, data) {
 
   var stats = data.find(o => o.kind === 'agentStats');
   cluster_stats[cluster] = stats
+  cluster_stats[cluster].num_records = data.length
 
   // Set main cluster data
   memcached.set(cluster, data, 3600, function (err) {
