@@ -5,6 +5,7 @@ var extend = require('node.extend');
 var bodyParser     =        require("body-parser");
 var memcached = new Memcached('localhost:11211', {"maxValue": 5242880});
 var clusters = []
+var cluster_stats = []
 
 app.use(bodyParser.json({limit: 1024102420, type:'application/json'}));
 // bodyParser.urlencoded({limit: 50000000, extended: false })
@@ -42,12 +43,20 @@ app.post('/data', function (req, res, next) {
   }
 })
 
+app.get('/stats', function (req, res, next) {
+  if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {
+    res.status(200);
+    res.send(cluster_stats);
+  } else {
+    res.sendStatus(401);
+  }
+})
+
 app.options("/*", function(req, res, next){
   res.send(200);
 });
 
 app.listen(80, () => console.log('App listening on port 80!'))
-
 
 function sendData(res) {
   memcached.getMulti(clusters, function (err, data) {
@@ -60,10 +69,16 @@ function sendData(res) {
 }
 
 function setData(cluster, data) {
+
+  // Add cluster to cluster list if not already there
   if (clusters.indexOf(cluster) === -1) {
       clusters.push(cluster);
   }
 
+  var stats = data.find(o => o.kind === 'agentStats');
+  cluster_stats[cluster] = stats
+
+  // Set main cluster data
   memcached.set(cluster, data, 3600, function (err) {
     if(err) {
       console.log(err)
