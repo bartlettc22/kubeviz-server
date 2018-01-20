@@ -5,9 +5,10 @@ var extend = require('node.extend');
 var bodyParser     =        require("body-parser");
 var memcached = new Memcached('localhost:11211', {"maxValue": 5242880});
 var clusters = []
-var cluster_stats = []
+var cluster_stats = {}
 
 app.use(bodyParser.json({limit: 1024102420, type:'application/json'}));
+app.use(logErrors)
 // bodyParser.urlencoded({limit: 50000000, extended: false })
 // app.use(bodyParser);
 // app.use(bodyParser);
@@ -84,4 +85,12 @@ function setData(cluster, data) {
       console.log(err)
     }
   });
+}
+
+function logErrors (err, req, res, next) {
+  if(req.query.cluster) {
+    console.log("Error with data from cluster: "+req.query.cluster);
+    console.error(err.stack)
+  }
+  next(err)
 }
