@@ -1,3 +1,4 @@
+var apiai = require('apiai');
 const express = require('express')
 const app = express()
 var Memcached = require('memcached');
@@ -6,6 +7,8 @@ var bodyParser     =        require("body-parser");
 var memcached = new Memcached('localhost:11211', {"maxValue": 5242880});
 var clusters = []
 var cluster_stats = {}
+
+var apiai = apiai(process.env.DIALOG_FLOW_TOKEN);
 
 app.use(bodyParser.json({limit: 1024102420, type:'application/json'}));
 app.use(logErrors)
@@ -19,6 +22,16 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
   next();
  });
+
+app.post('/dialogflow', function (req, res, next) {
+  if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {
+    res.status(200);
+    res.setHeader('Content-Type', 'application/json');
+    res.send('{"speech": "this is a response from the kube viz web server", "displayText": "kubeviz text response", "data": {}, "contextOut": [],  "source": "foo"}')
+  } else {
+    res.sendStatus(401);
+  }
+})
 
 app.get('/data', function (req, res, next) {
   if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {

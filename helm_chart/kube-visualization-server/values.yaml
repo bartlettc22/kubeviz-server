@@ -8,3 +8,4 @@ Server:
   ApiKey: ""
   HttpPort: 80
   MemcachedMaxValueSize: 5m
+  DialogFlowToken: ""
