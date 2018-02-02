@@ -1,21 +1,23 @@
-var apiai = require('apiai');
-const express = require('express')
-const app = express()
-var Memcached = require('memcached');
-var extend = require('node.extend');
-var bodyParser     =        require("body-parser");
-var memcached = new Memcached('localhost:11211', {"maxValue": 5242880});
-var clusters = []
-var cluster_stats = {}
+var express         = require('express')
+var app             = express()
+var extend          = require('node.extend');
+var bodyParser      = require("body-parser");
 
-var apiai = apiai(process.env.DIALOG_FLOW_TOKEN);
+// Authenticate all incoming requests
+app.use(function(req, res, next) {
+  if (req.header("X-KubeViz-Token") !== process.env.X_KUBEVIZ_TOKEN) {
+    return res.sendStatus(401);
+  }
+  next();
+});
 
+// Parse json bodies
 app.use(bodyParser.json({limit: 1024102420, type:'application/json'}));
-app.use(logErrors)
-// bodyParser.urlencoded({limit: 50000000, extended: false })
-// app.use(bodyParser);
-// app.use(bodyParser);
 
+// On error log in a centralized way
+app.use(logErrors)
+
+// Add access control headers (CORS) to all responses
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range,X-KubeViz-Token");
@@ -23,83 +25,20 @@ app.use(function(req, res, next) {
   next();
  });
 
-app.post('/dialogflow', function (req, res, next) {
-  if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {
-    res.status(200);
-    res.setHeader('Content-Type', 'application/json');
-    res.send('{"speech": "this is a response from the kube viz web server", "displayText": "kubeviz text response", "data": {}, "contextOut": [],  "source": "foo"}')
-  } else {
-    res.sendStatus(401);
-  }
-})
+// Routes
+var data = require('./routes/data');
+app.use('/data', data);
+var stats = require('./routes/stats');
+app.use('/stats', stats);
+var dialogFlow = require('./routes/dialogFlow');
+app.use('/dialogFlow', dialogFlow);
 
-app.get('/data', function (req, res, next) {
-  if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {
-    res.status(200);
-    sendData(res);
-  } else {
-    res.sendStatus(401);
-  }
-})
-
-app.post('/data', function (req, res, next) {
-  if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {
-    try {
-        setData(req.query.cluster, req.body)
-    } catch(e) {
-        console.log(e);
-        res.sendStatus(500);
-    }
-
-    res.sendStatus(200);
-  } else {
-    res.sendStatus(401);
-  }
-})
-
-app.get('/stats', function (req, res, next) {
-  if(req.header("X-KubeViz-Token") === process.env.X_KUBEVIZ_TOKEN) {
-    res.status(200);
-    res.send(cluster_stats);
-  } else {
-    res.sendStatus(401);
-  }
-})
-
+// Respond to OPTIONS requests
 app.options("/*", function(req, res, next){
   res.send(200);
 });
 
 app.listen(80, () => console.log('App listening on port 80!'))
-
-function sendData(res) {
-  memcached.getMulti(clusters, function (err, data) {
-    if(err) {
-      console.log(err);
-    } else {
-      res.send(data)
-    }
-  });
-}
-
-function setData(cluster, data) {
-
-  // Add cluster to cluster list if not already there
-  if (clusters.indexOf(cluster) === -1) {
-      clusters.push(cluster);
-  }
-
-  var stats = data.find(o => o.kind === 'agentStats');
-  cluster_stats[cluster] = stats
-  cluster_stats[cluster].num_records = data.length
-
-  // Set main cluster data
-  memcached.set(cluster, data, 3600, function (err) {
-    if(err) {
-      console.log(err)
-    }
-  });
-}
 
 function logErrors (err, req, res, next) {
   if(req.query.cluster) {

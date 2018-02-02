@@ -9,7 +9,7 @@ metadata:
     component: {{ .Values.Server.ComponentName }}
     app: {{template "name" .}}
 spec:
-  replicas: {{ DIALOG_FLOW_TOKEN.Values.Server.Replicas }}
+  replicas: {{ .Values.Server.Replicas }}
   template:
     metadata:
       name: {{ template "fullname" . }}
@@ -29,12 +29,8 @@ spec:
           value: {{ .Values.Server.ApiKey }}
         - name: "API_ENDPOINT"
           value: "{{ .Values.Server.ApiHostname }}"
-        - name: "DIALOG_FLOW_TOKEN"
-          value: "{{ .Values.Server.DialogFlowToken }}"
-      - name: {{ template "fullname" . }}-memcached
-        image: memcached:latest
+        - name: "MONGODB_HOST"
+          value: "localhost"
+      - name: {{ template "fullname" . }}-mongodb
+        image: mongo:latest
         imagePullPolicy: Always
-        args: ["memcached", "-I", "{{ .Values.Server.MemcachedMaxValueSize }}"]
-        # ports:
-        # - name: memcached
-        #   containerPort: 11211

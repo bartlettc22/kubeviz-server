@@ -13,7 +13,9 @@
     "apiai": "^4.0.3",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "memcached": "^2.2.2",
-    "node.extend": "^2.0.0"
+    "moment": "^2.20.1",
+    "mongodb": "^3.0.2",
+    "node.extend": "^2.0.0",
+    "request": "^2.83.0"
   }
 }
