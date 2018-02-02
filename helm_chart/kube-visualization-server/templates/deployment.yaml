@@ -31,6 +31,8 @@ spec:
           value: "{{ .Values.Server.ApiHostname }}"
         - name: "MONGODB_HOST"
           value: "localhost"
+        - name: "PROMETHEUS_ENDPOINTS"
+          value: "{{ .Values.Server.PrometheusEndpoints }}"
       - name: {{ template "fullname" . }}-mongodb
         image: mongo:latest
         imagePullPolicy: Always
