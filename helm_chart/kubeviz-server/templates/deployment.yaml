@@ -29,6 +29,6 @@ spec:
           value: {{ .Values.Server.ApiKey }}
         # - name: "API_ENDPOINT"
         #   value: "{{ .Values.Server.ApiHostname }}"
-      - name: {{ template "fullname" . }}-mongodb
-        image: mongo:latest
-        imagePullPolicy: Always
+      # - name: {{ template "fullname" . }}-mongodb
+      #   image: mongo:latest
+      #   imagePullPolicy: Always
