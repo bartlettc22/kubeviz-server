@@ -19,9 +19,7 @@ deploy:
 - provider: script
   script: bash scripts/publish_docker.sh ${TRAVIS_BRANCH}
   on:
-    branches:
-      except:
-      - master
+    condition: "${TRAVIS_BRANCH} != master"
 env:
   global:
   - secure: jzD5S8qrIG6TdubUDKmF27NdiLMRgAqsD44My6oZwP188zzxm9nSfYwPaAAIdsWiNYlzybwnho9e6/h66p1fPalewxBt56Dh0PXng5ZRz+sYnMqs1TXSEy66E4hjwotfBTpXTZ95EM3ZwbhSsvZlvx1n7lV2s9GVFcNIFbVXd3TicHmQmUV4GJ/uOisR2UKu7x+G0QQCrydVj5lRl6pnxmVouQVaq/HXMEGc7WFoUV4qFtR2B+1D+OcVQQC+PsocblhVEfoZhzy8Se9wguB29l2cQI2Val2rHUOyrEPSJeeP9rUPdNO59kWC7Znpno2ZMviD3DSWTKUQ2bb9jVtQYs5sp6ComT5f91+YNx61a9N4kzrWAS38SwUzRJS6z4mPs+18Jcst0UffLMvi1ltnWkgNtnLqTNV05YW1ZUTbh92RLE/99GqDw5kFvhQ/5DXvtTpwzSFfXNT9itLZFO+S1oPKj7CgRnjrn6DEwP7zmYpzMGwF8y3UnoCPUC72tWgBlcmcXU0hstawUbh8EyPnCot9ejVfQSzRL6bBoNzv/1viZzu9naT6bLzYS3l659KSYPd0EhJtSBbyELvOFRTG07ez7OdLctyY/umX50L6EF1SELQXji3y5qENXXqkwyCxbkoiewyFBD1i3LcE+CHI8uxYdkzJAy8vsNHORHd2HHY=
