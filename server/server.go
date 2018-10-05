@@ -10,17 +10,21 @@ import (
 )
 
 var clusters map[string]data.DataStruct
+var authToken string
 
 func init() {
   clusters = make(map[string]data.DataStruct)
 }
 
-func Start(listenerPort int) {
+func Start(listenerPort int, token string) {
   log.Info("Starting server")
+
+	authToken = token
 
   router := mux.NewRouter()
   router.HandleFunc("/v1/data", PostData).Methods("POST")
   router.HandleFunc("/v1/metadata", GetMetadata).Methods("GET")
+	router.Use(AuthMiddleware)
 
   server := &http.Server {
     Addr: fmt.Sprintf(":%d", listenerPort),
@@ -29,6 +33,23 @@ func Start(listenerPort int) {
 
   log.Info("Listening on port ", listenerPort)
   log.Fatal(server.ListenAndServe())
+}
+
+func AuthMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        token := r.Header.Get("X-Kubeviz-Token")
+
+        if authToken != "" {
+					// Auth is required
+					if (token != "" && token == authToken) {
+	        	// Pass down the request to the next middleware (or final handler)
+	        	next.ServeHTTP(w, r)
+	        } else {
+	        	// Write an error and stop the handler chain
+	        	http.Error(w, "", http.StatusForbidden)
+	        }
+				}
+    })
 }
 
 func PostData(w http.ResponseWriter, r *http.Request) {

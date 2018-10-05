@@ -25,10 +25,5 @@ spec:
         image: "{{.Values.Server.Image}}:{{.Values.Server.ImageTag}}"
         imagePullPolicy: "{{.Values.Server.ImagePullPolicy}}"
         env:
-        - name: X_KUBEVIZ_TOKEN
+        - name: KUBEVIZ_TOKEN
           value: {{ .Values.Server.ApiKey }}
-        # - name: "API_ENDPOINT"
-        #   value: "{{ .Values.Server.ApiHostname }}"
-      # - name: {{ template "fullname" . }}-mongodb
-      #   image: mongo:latest
-      #   imagePullPolicy: Always
