@@ -1,15 +1,20 @@
-FROM node:alpine
+FROM golang:1.10.2-alpine as builder
 
-EXPOSE 80
+ARG VERSION=master
+ARG GOOS=linux
 
-COPY src /usr/src/app
+WORKDIR /go/src/github.com/bartlettc22/kubeviz-server/
+COPY main.go .
+COPY vendor vendor
+RUN ls
+RUN CGO_ENABLED=0 GOOS=${GOOS} go build -ldflags "-X main.version=${VERSION}" -v -a -o kubeviz-server .
 
-WORKDIR /usr/src/app
+#### Stage 2 ####
 
-RUN npm install -g nodemon
-RUN npm install
+FROM alpine:latest
 
-ENV SERVER_VERSION=0.1.0
+RUN apk --no-cache add ca-certificates
 
-# CMD sh
-CMD ["nodemon", "app.js"]
+COPY --from=builder /go/src/github.com/bartlettc22/kubeviz-server/kubeviz-server /usr/bin
+
+CMD ["kubeviz-server"]

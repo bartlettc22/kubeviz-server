@@ -24,6 +24,9 @@
 #   go-tests = true
 #   unused-packages = true
 
+[[constraint]]
+  name = "github.com/bartlettc22/kubeviz-agent"
+  branch = "goclient"
 
 [prune]
   go-tests = true

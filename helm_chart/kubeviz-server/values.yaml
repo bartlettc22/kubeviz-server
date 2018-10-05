@@ -1,0 +1,9 @@
+Server:
+  ComponentName: kubeviz-server
+  Replicas: 1
+  Image: bartlettc/kubeviz-server
+  ImageTag: 0.2.0
+  ImagePullPolicy: IfNotPresent
+  ApiHostname: "" # Example https://my-collector:8090
+  ApiKey: ""
+  HttpPort: 80
