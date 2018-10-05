@@ -3,7 +3,7 @@
 SOURCE_VERSION=${1}
 PUBLISH_VERSION=${SOURCE_VERSION}
 LATEST=${2:-false}
-DOCKER_REPO="bartlettc22/kubeviz-server"
+DOCKER_REPO="bartlettc/kubeviz-server"
 
 docker tag ${DOCKER_REPO}:${SOURCE_VERSION}-linux ${DOCKER_REPO}:${PUBLISH_VERSION}
 echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin

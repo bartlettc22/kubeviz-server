@@ -2,7 +2,7 @@
 
 VERSION=${1:-dev}
 GOOS=${2:-linux}
-DOCKER_REPO="bartlettc22/kubeviz-server"
+DOCKER_REPO="bartlettc/kubeviz-server"
 
 # Directory to house our binaries
 mkdir -p bin
