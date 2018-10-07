@@ -4,7 +4,7 @@ services:
 - docker
 script:
 - scripts/build.sh ${TRAVIS_BRANCH} linux
-- scripts/build.sh ${TRAVIS_BRANCH} darwin
+# - scripts/build.sh ${TRAVIS_BRANCH} darwin
 deploy:
 - provider: releases
   api_key:

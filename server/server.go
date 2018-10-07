@@ -1,12 +1,12 @@
 package server
 
 import (
-	"fmt"
-	"net/http"
-	"encoding/json"
+  "fmt"
+  "net/http"
+  "encoding/json"
   "github.com/gorilla/mux"
   log "github.com/Sirupsen/logrus"
-	"github.com/bartlettc22/kubeviz-agent/pkg/data"
+  "github.com/bartlettc22/kubeviz-agent/pkg/data"
 )
 
 var clusters map[string]data.DataStruct
@@ -19,12 +19,12 @@ func init() {
 func Start(listenerPort int, token string) {
   log.Info("Starting server")
 
-	authToken = token
+  authToken = token
 
   router := mux.NewRouter()
   router.HandleFunc("/v1/data", PostData).Methods("POST")
   router.HandleFunc("/v1/metadata", GetMetadata).Methods("GET")
-	router.Use(AuthMiddleware)
+  router.Use(AuthMiddleware)
 
   server := &http.Server {
     Addr: fmt.Sprintf(":%d", listenerPort),
@@ -40,15 +40,15 @@ func AuthMiddleware(next http.Handler) http.Handler {
         token := r.Header.Get("X-Kubeviz-Token")
 
         if authToken != "" {
-					// Auth is required
-					if (token != "" && token == authToken) {
-	        	// Pass down the request to the next middleware (or final handler)
-	        	next.ServeHTTP(w, r)
-	        } else {
-	        	// Write an error and stop the handler chain
-	        	http.Error(w, "", http.StatusForbidden)
-	        }
-				}
+          // Auth is required
+          if (token != "" && token == authToken) {
+            // Pass down the request to the next middleware (or final handler)
+            next.ServeHTTP(w, r)
+          } else {
+            // Write an error and stop the handler chain
+            http.Error(w, "", http.StatusForbidden)
+          }
+        }
     })
 }
 
@@ -65,5 +65,5 @@ func PostData(w http.ResponseWriter, r *http.Request) {
 
 func GetMetadata(w http.ResponseWriter, r *http.Request) {
   log.Info("[GET] Metadata")
-	json.NewEncoder(w).Encode(clusters)
+  json.NewEncoder(w).Encode(clusters)
 }
