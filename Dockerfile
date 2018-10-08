@@ -8,6 +8,7 @@ COPY main.go .
 COPY vendor vendor
 COPY cmd cmd
 COPY server server
+COPY aws aws
 RUN ls
 RUN CGO_ENABLED=0 GOOS=${GOOS} go build -ldflags "-X main.version=${VERSION}" -v -a -o kubeviz-server .
 
