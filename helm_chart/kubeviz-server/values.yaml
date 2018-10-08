@@ -9,3 +9,5 @@ Server:
   HttpPort: 80
   AwsAccessKey: ""
   AwsSecretKey: ""
+  S3Bucket: ""
+  S3Key: ""

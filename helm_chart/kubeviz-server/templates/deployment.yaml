@@ -27,7 +27,11 @@ spec:
         env:
         - name: KUBEVIZ_TOKEN
           value: {{ .Values.Server.ApiKey }}
+        - name: KUBEVIZ_S3BUCKET
+          value: {{ .Values.Server.S3Bucket }}
+        - name: KUBEVIZ_S3KEY
+          value: {{ .Values.Server.S3Key }}
         - name: "AWS_ACCESS_KEY_ID"
           value: "{{ .Values.Agent.AwsAccessKey }}"
         - name: "AWS_SECRET_ACCESS_KEY"
-          value: "{{ .Values.Agent.AwsSecretKey }}"          
+          value: "{{ .Values.Agent.AwsSecretKey }}"
