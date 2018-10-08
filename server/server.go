@@ -104,7 +104,14 @@ func runPoster() {
   sleepInt := 10 * time.Second
 	log.Info("Starting poster go routine every ", sleepInt)
   for {
-		output, err := json.Marshal(summaryData)
+
+		var outputMap []Metadata
+		// outputMap = make(map[]Metadata)
+		for _, v := range summaryData {
+    	outputMap = append(outputMap, v)
+    }
+
+		output, err := json.Marshal(outputMap)
 		if err != nil {
 			log.Error("Unable to create JSON output", err)
 		}
