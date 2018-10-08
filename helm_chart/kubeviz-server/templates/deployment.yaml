@@ -27,3 +27,7 @@ spec:
         env:
         - name: KUBEVIZ_TOKEN
           value: {{ .Values.Server.ApiKey }}
+        - name: "AWS_ACCESS_KEY_ID"
+          value: "{{ .Values.Agent.AwsAccessKey }}"
+        - name: "AWS_SECRET_ACCESS_KEY"
+          value: "{{ .Values.Agent.AwsSecretKey }}"          
