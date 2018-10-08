@@ -2,24 +2,41 @@ package server
 
 import (
   "fmt"
+  "time"
   "net/http"
   "encoding/json"
   "github.com/gorilla/mux"
   log "github.com/Sirupsen/logrus"
   "github.com/bartlettc22/kubeviz-agent/pkg/data"
+  "github.com/bartlettc22/kubeviz-server/aws"
 )
 
-var clusters map[string]data.DataStruct
+// var clusters map[string]data.DataStruct
 var authToken string
+var s3Bucket string
+var s3Key string
 
-func init() {
-  clusters = make(map[string]data.DataStruct)
+type Metadata struct {
+	ClusterName string
+	Region string
+	K8sVersion string
+	K8sNumNodes int
+	AwsAccount string
 }
 
-func Start(listenerPort int, token string) {
+var summaryData map[string]Metadata
+
+func init() {
+  // clusters = make(map[string]data.DataStruct)
+	summaryData = make(map[string]Metadata)
+}
+
+func Start(listenerPort int, token string, bucket string, key string) {
   log.Info("Starting server")
 
   authToken = token
+	s3Bucket = bucket
+	s3Key = key
 
   router := mux.NewRouter()
   router.HandleFunc("/v1/data", PostData).Methods("POST")
@@ -31,8 +48,12 @@ func Start(listenerPort int, token string) {
     Handler: router,
   }
 
+	go runPoster()
+
   log.Info("Listening on port ", listenerPort)
   log.Fatal(server.ListenAndServe())
+
+
 }
 
 func AuthMiddleware(next http.Handler) http.Handler {
@@ -48,7 +69,9 @@ func AuthMiddleware(next http.Handler) http.Handler {
             // Write an error and stop the handler chain
             http.Error(w, "", http.StatusForbidden)
           }
-        }
+        } else {
+					next.ServeHTTP(w, r)
+				}
     })
 }
 
@@ -57,13 +80,36 @@ func PostData(w http.ResponseWriter, r *http.Request) {
   var data data.DataStruct
 
   json.NewDecoder(r.Body).Decode(&data)
-  clusters[data.KubernetesResources.Metadata.ClusterName] = data
+  // clusters[data.KubernetesResources.Metadata.ClusterName] = data
+
+	summaryData[data.KubernetesResources.Metadata.ClusterName] = Metadata{
+		ClusterName: data.KubernetesResources.Metadata.ClusterName,
+		Region: data.KubernetesResources.Metadata.Region,
+		K8sVersion: data.KubernetesResources.Metadata.KubernetesVersion,
+		K8sNumNodes: len(data.KubernetesResources.Nodes),
+		AwsAccount: data.AwsResources.Metadata.AwsAccountAlias + "(" + data.AwsResources.Metadata.AwsAccount + ")",
+	}
+
   log.Info("[POST] Data")
   fmt.Fprintf(w, "ok");
-
 }
 
 func GetMetadata(w http.ResponseWriter, r *http.Request) {
   log.Info("[GET] Metadata")
-  json.NewEncoder(w).Encode(clusters)
+	w.Header().Set("Content-Type", "application/json")
+  json.NewEncoder(w).Encode(summaryData)
+}
+
+func runPoster() {
+  sleepInt := 10 * time.Second
+	log.Info("Starting poster go routine every ", sleepInt)
+  for {
+		output, err := json.Marshal(summaryData)
+		if err != nil {
+			log.Error("Unable to create JSON output", err)
+		}
+
+		go aws.PostToS3(output, s3Bucket, s3Key)
+    time.Sleep(sleepInt)
+  }
 }

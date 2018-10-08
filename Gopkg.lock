@@ -10,7 +10,7 @@
   version = "v1.1.0"
 
 [[projects]]
-  digest = "1:9782862d19348de31b2b456409d278e5bbcaf53d43ec2776da12212f9dddad19"
+  digest = "1:da04aac095fa420438d0d88b0d15fdb932dcee7f0ccbc4ada9c84d0423974ef9"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -30,16 +30,21 @@
     "aws/request",
     "aws/session",
     "aws/signer/v4",
+    "internal/s3err",
     "internal/sdkio",
     "internal/sdkrand",
     "internal/sdkuri",
     "internal/shareddefaults",
     "private/protocol",
+    "private/protocol/eventstream",
+    "private/protocol/eventstream/eventstreamapi",
     "private/protocol/query",
     "private/protocol/query/queryutil",
     "private/protocol/rest",
+    "private/protocol/restxml",
     "private/protocol/xml/xmlutil",
     "service/iam",
+    "service/s3",
     "service/sts",
   ]
   pruneopts = "UT"
@@ -595,6 +600,10 @@
   analyzer-version = 1
   input-imports = [
     "github.com/Sirupsen/logrus",
+    "github.com/aws/aws-sdk-go/aws",
+    "github.com/aws/aws-sdk-go/aws/awserr",
+    "github.com/aws/aws-sdk-go/aws/session",
+    "github.com/aws/aws-sdk-go/service/s3",
     "github.com/bartlettc22/kubeviz-agent/pkg/data",
     "github.com/gorilla/mux",
     "github.com/spf13/cobra",
