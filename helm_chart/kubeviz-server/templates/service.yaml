@@ -6,15 +6,15 @@ metadata:
     heritage: {{.Release.Service}}
     release: {{.Release.Name}}
     chart: {{.Chart.Name}}-{{.Chart.Version | replace "+" "_"}}
-    component: {{.Values.Kubeviz.ComponentName}}
+    component: {{.Values.ComponentName}}
     app: {{template "name" .}}
 spec:
   type: ClusterIP
   ports:
-    - port: {{.Values.Kubeviz.HttpPort}}
-      targetPort: {{.Values.Kubeviz.HttpPort}}
+    - port: {{.Values.HttpPort}}
+      targetPort: {{.Values.HttpPort}}
       name: http
       protocol: TCP
   selector:
-    component: {{.Values.Kubeviz.ComponentName}}
+    component: {{.Values.ComponentName}}
     app: {{template "name" .}}
