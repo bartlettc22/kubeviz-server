@@ -1,13 +1,15 @@
-Server:
-  ComponentName: kubeviz-server
-  Replicas: 1
-  Image: bartlettc/kubeviz-server
-  ImageTag: 0.2.0
-  ImagePullPolicy: IfNotPresent
-  ApiHostname: "" # Example https://my-collector:8090
-  ApiKey: ""
-  HttpPort: 80
-  AwsAccessKey: ""
-  AwsSecretKey: ""
-  S3Bucket: ""
-  S3Key: ""
+ComponentName: kubeviz-server
+Image: bartlettc/kubeviz-server
+ImageTag: 0.1.0
+ImagePullPolicy: IfNotPresent
+Replicas: 1
+HttpPort: 80
+ApiKey: ""
+AwsAccessKey: ""
+AwsSecretKey: ""
+S3Bucket: ""
+S3Key: ""
+
+ingress:
+  enabled: false
+  hosts: []
