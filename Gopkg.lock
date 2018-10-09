@@ -2,15 +2,15 @@
 
 
 [[projects]]
-  digest = "1:dc2d85c13ac22c22a1f3170a41a8e1b897fa05134aaf533f16df44f66a25b4a1"
+  digest = "1:3f53e9e4dfbb664cd62940c9c4b65a2171c66acd0b7621a1a6b8e78513525a52"
   name = "github.com/Sirupsen/logrus"
   packages = ["."]
   pruneopts = "UT"
-  revision = "a67f783a3814b8729bd2dac5780b5f78f8dbd64d"
-  version = "v1.1.0"
+  revision = "ad15b42461921f1fb3529b058c6786c6a45d5162"
+  version = "v1.1.1"
 
 [[projects]]
-  digest = "1:da04aac095fa420438d0d88b0d15fdb932dcee7f0ccbc4ada9c84d0423974ef9"
+  digest = "1:ec7d03f71d13aa4c6bf8e3d97551d58f6a33f5e904bfc45d31fc72c6962c4982"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -48,12 +48,12 @@
     "service/sts",
   ]
   pruneopts = "UT"
-  revision = "3c7ce80a3b6d9b952022a6c5e5dd758486ff4de1"
-  version = "v1.15.48"
+  revision = "dd947f47decb37a7c3bee72501bfc790701ab5ad"
+  version = "v1.15.50"
 
 [[projects]]
   branch = "goclient"
-  digest = "1:8f4be6fb3cdd672a7b48553adf5882de84338322bc756ce8d9abf715c4105210"
+  digest = "1:62322800b0cb7d59babaa8a5446b9b1499b9644b8463265814187469385dabf2"
   name = "github.com/bartlettc22/kubeviz-agent"
   packages = [
     "pkg/aws",
@@ -61,7 +61,7 @@
     "pkg/kubernetes",
   ]
   pruneopts = "UT"
-  revision = "6c2b55f43368a74ddf61a926edd9d41c876dae1f"
+  revision = "8ad7348bd44ca67ed713ef489cfca01b11a90f45"
 
 [[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
@@ -361,7 +361,7 @@
     "idna",
   ]
   pruneopts = "UT"
-  revision = "68fc911561ed0cb104e22deafa05515909b706ab"
+  revision = "146acd28ed5894421fb5aac80ca93bc1b1f46f87"
 
 [[projects]]
   branch = "master"
@@ -376,14 +376,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:8a35cf7e4a316cee63d627d7de15b81901a19f8a3f9aff0d1a80c746a57234d6"
+  digest = "1:850d28ab022512e2cd3cf511a77f363c29e22689b4031f2050871f5de47ae4a0"
   name = "golang.org/x/sys"
   packages = [
     "unix",
     "windows",
   ]
   pruneopts = "UT"
-  revision = "8469e314837c2e2471561de5c47bbf8bfd0d9099"
+  revision = "4497e2df6f9e69048a54498c7affbbec3294ad47"
 
 [[projects]]
   digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
@@ -450,7 +450,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ea36e4f5d593643a2be30a8b4c93a472498b4c3c148cb43477bd636b2cd2ae9f"
+  digest = "1:55ae66f662234efbf8d64981e5a2f4a54858437b1307b6aa0efac7263ece00ea"
   name = "k8s.io/api"
   packages = [
     "admissionregistration/v1alpha1",
@@ -486,11 +486,11 @@
     "storage/v1beta1",
   ]
   pruneopts = "UT"
-  revision = "a191abe0b71e00ce4cde58af8002aa4c1a8bb068"
+  revision = "942fd07262c19357041a676f7170ed250f58b69a"
 
 [[projects]]
   branch = "master"
-  digest = "1:7ff9ca3a86949577b0763f5e3ce4063a49dad492aa610cb4edb0ae4bcb5a1ecd"
+  digest = "1:d3596870b579af5149f04859aaeb6ffa3b06a6b2e1e8ab3260609f68b10e9e70"
   name = "k8s.io/apimachinery"
   packages = [
     "pkg/api/errors",
@@ -530,7 +530,7 @@
     "third_party/forked/golang/reflect",
   ]
   pruneopts = "UT"
-  revision = "ed5594dcf47bc331577d2ffbcd24c4b1d20d9a6d"
+  revision = "e65edc4ced47a9ae9b5ae9c1c193dba1a5827b62"
 
 [[projects]]
   digest = "1:51fd9ac9f2be10d79f5af101a7a1d758ef283fdb028a0d11198754bd3d4a6020"
@@ -608,6 +608,7 @@
     "github.com/gorilla/mux",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
+    "k8s.io/api/core/v1",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

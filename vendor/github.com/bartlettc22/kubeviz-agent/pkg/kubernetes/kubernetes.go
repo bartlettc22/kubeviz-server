@@ -1,16 +1,12 @@
 package kubernetes
 
 import (
-  // "encoding/json"
-  "flag"
-  // "fmt"
   "os"
   "path/filepath"
   v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
   "k8s.io/client-go/discovery"
-  // "k8s.io/client-go/discovery/helper"
 	"k8s.io/client-go/tools/clientcmd"
   restclient "k8s.io/client-go/rest"
   log "github.com/Sirupsen/logrus"
@@ -21,6 +17,7 @@ type KubernetesResources struct {
   // ResourceList []*metav1.APIResourceList
   Nodes []v1.Node
   Namespaces []v1.Namespace
+  Pods []v1.Pod
 }
 
 type Metadata struct {
@@ -34,21 +31,24 @@ var kubeConfig *restclient.Config
 var clientset *kubernetes.Clientset
 var err error
 
-func Init() {
+func init() {
 
-  var kubeconfig *string
-
-  if home := homeDir(); home != "" {
-    kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
+  home := homeDir();
+  kubeConfigPath := filepath.Join(home, ".kube", "config")
+  if e, _ := exists(kubeConfigPath); home != "" && e {
+    log.Info("Attempting .kube/config")
+    // use the current context in kubeconfig
+    kubeConfig, err = clientcmd.BuildConfigFromFlags("", kubeConfigPath)
+    if err != nil {
+      log.Fatal(err.Error())
+    }
   } else {
-    kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
-  }
-  flag.Parse()
-
-  // use the current context in kubeconfig
-  kubeConfig, err = clientcmd.BuildConfigFromFlags("", *kubeconfig)
-  if err != nil {
-    panic(err.Error())
+    // Try in-cluster config
+    log.Info("Attempting in-cluster config")
+    kubeConfig, err = restclient.InClusterConfig()
+  	if err != nil {
+  		log.Fatal(err.Error())
+  	}
   }
 
   clientset, err = kubernetes.NewForConfig(kubeConfig)
@@ -68,6 +68,7 @@ func Run(resources *KubernetesResources) {
   getVersion(resources)
   getNodes(resources)
   getNamespaces(resources)
+  getPods(resources)
 }
 
 func getVersion(resources *KubernetesResources) {
@@ -101,18 +102,17 @@ func getNamespaces(resources *KubernetesResources) {
   resources.Namespaces = namespaces.Items
 }
 
-// func getServices() {
-//   namespaces, err := clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
-// 	if err != nil {
-// 		log.Fatal(err.Error())
-// 	}
-//   cluster.Namespaces = namespaces.Items
-// }
-//
-// func getIngresses() {
-//   namespaces, err := clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
-// 	if err != nil {
-// 		log.Fatal(err.Error())
-// 	}
-//   cluster.Namespaces = namespaces.Items
-// }
+func getPods(resources *KubernetesResources) {
+  pods, err := clientset.CoreV1().Pods("").List(metav1.ListOptions{})
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+  resources.Pods = pods.Items
+}
+
+func exists(path string) (bool, error) {
+    _, err := os.Stat(path)
+    if err == nil { return true, nil }
+    if os.IsNotExist(err) { return false, nil }
+    return true, err
+}

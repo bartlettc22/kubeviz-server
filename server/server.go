@@ -3,12 +3,14 @@ package server
 import (
   "fmt"
   "time"
+  "strings"
   "net/http"
   "encoding/json"
   "github.com/gorilla/mux"
   log "github.com/Sirupsen/logrus"
   "github.com/bartlettc22/kubeviz-agent/pkg/data"
   "github.com/bartlettc22/kubeviz-server/aws"
+  v1 "k8s.io/api/core/v1"
 )
 
 // var clusters map[string]data.DataStruct
@@ -22,6 +24,8 @@ type Metadata struct {
 	K8sVersion string
 	K8sNumNodes int
 	AwsAccount string
+  RbacEnabled bool
+  TillerVersion string
 }
 
 var summaryData map[string]Metadata
@@ -88,6 +92,8 @@ func PostData(w http.ResponseWriter, r *http.Request) {
 		K8sVersion: data.KubernetesResources.Metadata.KubernetesVersion,
 		K8sNumNodes: len(data.KubernetesResources.Nodes),
 		AwsAccount: data.AwsResources.Metadata.AwsAccountAlias + "(" + data.AwsResources.Metadata.AwsAccount + ")",
+    RbacEnabled: isRbacEnabled(&data.KubernetesResources.Pods),
+    TillerVersion: getTillerVersion(&data.KubernetesResources.Pods),
 	}
 
   log.Info("[POST] Data")
@@ -119,4 +125,42 @@ func runPoster() {
 		go aws.PostToS3(output, s3Bucket, s3Key)
     time.Sleep(sleepInt)
   }
+}
+
+func isRbacEnabled(pods *[]v1.Pod) bool {
+	for _, p := range *pods {
+		for labelKey, labelValue := range p.ObjectMeta.Labels {
+      if labelKey == "k8s-app" && labelValue == "kube-apiserver" {
+        for _, c := range p.Spec.Containers {
+          if (c.Name == "kube-apiserver") {
+            for _, com := range c.Command {
+              if (strings.Contains(com, "authorization-mode=RBAC")) {
+                return true
+              }
+            }
+            return false
+          }
+        }
+      }
+    }
+	}
+  return false
+}
+
+func getTillerVersion(pods *[]v1.Pod) string {
+	for _, p := range *pods {
+    if p.GetNamespace() == "kube-system" {
+      for labelKey, labelValue := range p.ObjectMeta.Labels {
+        if(labelKey == "name" && labelValue=="tiller") {
+          for _, c := range p.Spec.Containers {
+            if (c.Name == "tiller") {
+              imageParts := strings.Split(c.Image, ":")
+              return imageParts[1]
+            }
+          }
+        }
+      }
+    }
+	}
+  return "blah"
 }

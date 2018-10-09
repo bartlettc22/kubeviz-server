@@ -31,9 +31,10 @@ func PostToS3(postData []byte, s3Bucket string, s3Key string) {
 
   if err != nil {
     if aerr, ok := err.(awserr.Error); ok {
-      log.Info(aerr.Code())
+      log.Warn(aerr.Code())
     }
-    log.Fatal("Error uploading stats to S3; ", err)
+    log.Warn("Error uploading stats to S3; ", err)
+    return 
   }
 
   log.Info("Successfully posted data to s3: ", s3Bucket, "/", s3Key)
