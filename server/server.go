@@ -162,5 +162,5 @@ func getTillerVersion(pods *[]v1.Pod) string {
       }
     }
 	}
-  return "blah"
+  return ""
 }
