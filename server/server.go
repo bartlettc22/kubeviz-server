@@ -26,6 +26,8 @@ type Metadata struct {
 	AwsAccount string
   RbacEnabled bool
   TillerVersion string
+  IngressControllerVersion string
+  AsOf time.Time
 }
 
 var summaryData map[string]Metadata
@@ -94,6 +96,8 @@ func PostData(w http.ResponseWriter, r *http.Request) {
 		AwsAccount: data.AwsResources.Metadata.AwsAccountAlias + "(" + data.AwsResources.Metadata.AwsAccount + ")",
     RbacEnabled: isRbacEnabled(&data.KubernetesResources.Pods),
     TillerVersion: getTillerVersion(&data.KubernetesResources.Pods),
+    IngressControllerVersion: getIngressControllerVersion(&data.KubernetesResources.Pods),
+    AsOf: data.Metadata.RunTime,
 	}
 
   log.Info("[POST] Data")
@@ -157,6 +161,22 @@ func getTillerVersion(pods *[]v1.Pod) string {
               imageParts := strings.Split(c.Image, ":")
               return imageParts[1]
             }
+          }
+        }
+      }
+    }
+	}
+  return ""
+}
+
+func getIngressControllerVersion(pods *[]v1.Pod) string {
+	for _, p := range *pods {
+    for labelKey, labelValue := range p.ObjectMeta.Labels {
+      if(labelKey == "app" && labelValue=="nginx-ingress") {
+        for _, c := range p.Spec.Containers {
+          if (c.Name == "nginx-ingress-controller") {
+            imageParts := strings.Split(c.Image, ":")
+            return imageParts[1]
           }
         }
       }
