@@ -60,10 +60,6 @@ func ProcessInstanceType(data *data.DataStruct) {
 }
 
 func PostInstanceType(awsClient *aws.Client) {
-  // var outputMap []Metadata
-  // for _, v := range SummaryData {
-  //   outputMap = append(outputMap, v)
-  // }
 
   output, err := json.Marshal(TypeData)
   if err != nil {
