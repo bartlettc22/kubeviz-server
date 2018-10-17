@@ -1,7 +1,6 @@
 package reports
 
 import (
-  "fmt"
   "encoding/json"
   log "github.com/Sirupsen/logrus"
   "github.com/bartlettc22/kubeviz-server/aws"
